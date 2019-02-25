@@ -1,0 +1,21 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\Microsoft.Common.CurrentVersion.targets(1879,5): warning : The referenced project '..\cocos2d\external\Box2D\proj.win32\libbox2d.vcxproj' does not exist.
+  HelloWorldScene.cpp
+c:\users\100704214\desktop\gdwcc\cavern-crusaders\classes\helloworldscene.cpp(62): warning C4996: 'cocos2d::Director::sharedDirector': was declared deprecated
+  c:\users\100704214\desktop\cocos libeary\cocos2d-x-3.17\cocos\base\ccdirector.h(149): note: see declaration of 'cocos2d::Director::sharedDirector'
+c:\users\100704214\desktop\gdwcc\cavern-crusaders\classes\helloworldscene.cpp(82): warning C4996: 'cocos2d::Node::boundingBox': was declared deprecated
+  c:\users\100704214\desktop\cocos libeary\cocos2d-x-3.17\cocos\2d\ccnode.h(1200): note: see declaration of 'cocos2d::Node::boundingBox'
+c:\users\100704214\desktop\gdwcc\cavern-crusaders\classes\helloworldscene.cpp(87): warning C4996: 'cocos2d::Node::boundingBox': was declared deprecated
+  c:\users\100704214\desktop\cocos libeary\cocos2d-x-3.17\cocos\2d\ccnode.h(1200): note: see declaration of 'cocos2d::Node::boundingBox'
+c:\users\100704214\desktop\gdwcc\cavern-crusaders\classes\helloworldscene.cpp(93): warning C4996: 'cocos2d::Node::boundingBox': was declared deprecated
+  c:\users\100704214\desktop\cocos libeary\cocos2d-x-3.17\cocos\2d\ccnode.h(1200): note: see declaration of 'cocos2d::Node::boundingBox'
+c:\users\100704214\desktop\gdwcc\cavern-crusaders\classes\helloworldscene.cpp(181): warning C4996: 'cocos2d::Node::boundingBox': was declared deprecated
+  c:\users\100704214\desktop\cocos libeary\cocos2d-x-3.17\cocos\2d\ccnode.h(1200): note: see declaration of 'cocos2d::Node::boundingBox'
+c:\users\100704214\desktop\gdwcc\cavern-crusaders\classes\helloworldscene.cpp(183): warning C4996: 'cocos2d::Node::boundingBox': was declared deprecated
+  c:\users\100704214\desktop\cocos libeary\cocos2d-x-3.17\cocos\2d\ccnode.h(1200): note: see declaration of 'cocos2d::Node::boundingBox'
+c:\users\100704214\desktop\gdwcc\cavern-crusaders\classes\helloworldscene.cpp(185): warning C4996: 'cocos2d::Node::boundingBox': was declared deprecated
+  c:\users\100704214\desktop\cocos libeary\cocos2d-x-3.17\cocos\2d\ccnode.h(1200): note: see declaration of 'cocos2d::Node::boundingBox'
+c:\users\100704214\desktop\gdwcc\cavern-crusaders\classes\helloworldscene.cpp(187): warning C4996: 'cocos2d::Node::boundingBox': was declared deprecated
+  c:\users\100704214\desktop\cocos libeary\cocos2d-x-3.17\cocos\2d\ccnode.h(1200): note: see declaration of 'cocos2d::Node::boundingBox'
+  Cavern-Crusaders.vcxproj -> C:\Users\100704214\Desktop\GDWCC\Cavern-Crusaders\proj.win32\Debug.win32\Cavern-Crusaders.exe
+  Performing Custom Build Step
+  0 File(s) copied
