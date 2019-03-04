@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="win32">
+      <UniqueIdentifier>{84a8ebd7-7cf0-47f6-b75e-d441df67da40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{715254bc-d70b-4ec5-bf29-467dd3ace079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyCode">
+      <UniqueIdentifier>{574794c4-b0d0-453a-8800-d96aa20b91b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyCode\Header">
+      <UniqueIdentifier>{002c0d48-0954-45fd-9b96-4cec85a98a50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyCode\Sources">
+      <UniqueIdentifier>{9d5a1421-abc4-4e1e-a9db-9454b50e6e2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyCode\Obstacles">
+      <UniqueIdentifier>{5269e688-eb61-49e6-a4fc-42c1c8851103}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyCode\Obstacles\Source">
+      <UniqueIdentifier>{198fa8ae-1306-4bb5-9500-c1d43c9034c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MyCode\Obstacles\Header">
+      <UniqueIdentifier>{06130ece-f3ec-4496-bd00-6d5c08d9c1d8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\AppDelegate.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="Primitives.cpp">
+      <Filter>MyCode\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="InputHandler.cpp">
+      <Filter>MyCode\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Bats.cpp">
+      <Filter>MyCode\Obstacles\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Debree.cpp">
+      <Filter>MyCode\Obstacles\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="FallingStones.cpp">
+      <Filter>MyCode\Obstacles\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformManager.cpp">
+      <Filter>MyCode\Obstacles\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Rocks.cpp">
+      <Filter>MyCode\Obstacles\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Spikes.cpp">
+      <Filter>MyCode\Obstacles\Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\AppDelegate.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HelloWorldScene.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="Primitives.h">
+      <Filter>MyCode\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="InputHandler.h">
+      <Filter>MyCode\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Spikes.h">
+      <Filter>MyCode\Obstacles\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Rocks.h">
+      <Filter>MyCode\Obstacles\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformManager.h">
+      <Filter>MyCode\Obstacles\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="FallingStones.h">
+      <Filter>MyCode\Obstacles\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Debree.h">
+      <Filter>MyCode\Obstacles\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Bats.h">
+      <Filter>MyCode\Obstacles\Header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="game.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

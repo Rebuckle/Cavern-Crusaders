@@ -1,0 +1,27 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\Microsoft.Common.CurrentVersion.targets(1755,5): warning : The referenced project '..\cocos2d\external\Box2D\proj.win32\libbox2d.vcxproj' does not exist.
+  HelloWorldScene.cpp
+c:\users\100702721\desktop\new folder\cavern-crusaders-master\cavern-crusaders\classes\helloworldscene.cpp(62): warning C4996: 'cocos2d::Director::sharedDirector': was declared deprecated
+  c:\users\100702721\desktop\cocos libraries\cocos2d-x-3.17\cocos\base\ccdirector.h(149): note: see declaration of 'cocos2d::Director::sharedDirector'
+c:\users\100702721\desktop\new folder\cavern-crusaders-master\cavern-crusaders\classes\helloworldscene.cpp(190): warning C4996: 'cocos2d::Node::boundingBox': was declared deprecated
+  c:\users\100702721\desktop\cocos libraries\cocos2d-x-3.17\cocos\2d\ccnode.h(1200): note: see declaration of 'cocos2d::Node::boundingBox'
+c:\users\100702721\desktop\new folder\cavern-crusaders-master\cavern-crusaders\classes\helloworldscene.cpp(192): warning C4996: 'cocos2d::Node::boundingBox': was declared deprecated
+  c:\users\100702721\desktop\cocos libraries\cocos2d-x-3.17\cocos\2d\ccnode.h(1200): note: see declaration of 'cocos2d::Node::boundingBox'
+c:\users\100702721\desktop\new folder\cavern-crusaders-master\cavern-crusaders\classes\helloworldscene.cpp(194): warning C4996: 'cocos2d::Node::boundingBox': was declared deprecated
+  c:\users\100702721\desktop\cocos libraries\cocos2d-x-3.17\cocos\2d\ccnode.h(1200): note: see declaration of 'cocos2d::Node::boundingBox'
+c:\users\100702721\desktop\new folder\cavern-crusaders-master\cavern-crusaders\classes\helloworldscene.cpp(196): warning C4996: 'cocos2d::Node::boundingBox': was declared deprecated
+  c:\users\100702721\desktop\cocos libraries\cocos2d-x-3.17\cocos\2d\ccnode.h(1200): note: see declaration of 'cocos2d::Node::boundingBox'
+c:\users\100702721\desktop\new folder\cavern-crusaders-master\cavern-crusaders\classes\helloworldscene.cpp(198): warning C4996: 'cocos2d::Node::boundingBox': was declared deprecated
+  c:\users\100702721\desktop\cocos libraries\cocos2d-x-3.17\cocos\2d\ccnode.h(1200): note: see declaration of 'cocos2d::Node::boundingBox'
+c:\users\100702721\desktop\new folder\cavern-crusaders-master\cavern-crusaders\classes\helloworldscene.cpp(200): warning C4996: 'cocos2d::Node::boundingBox': was declared deprecated
+  c:\users\100702721\desktop\cocos libraries\cocos2d-x-3.17\cocos\2d\ccnode.h(1200): note: see declaration of 'cocos2d::Node::boundingBox'
+c:\users\100702721\desktop\new folder\cavern-crusaders-master\cavern-crusaders\classes\helloworldscene.cpp(212): warning C4996: 'cocos2d::Node::boundingBox': was declared deprecated
+  c:\users\100702721\desktop\cocos libraries\cocos2d-x-3.17\cocos\2d\ccnode.h(1200): note: see declaration of 'cocos2d::Node::boundingBox'
+c:\users\100702721\desktop\new folder\cavern-crusaders-master\cavern-crusaders\classes\helloworldscene.cpp(217): warning C4996: 'cocos2d::Node::boundingBox': was declared deprecated
+  c:\users\100702721\desktop\cocos libraries\cocos2d-x-3.17\cocos\2d\ccnode.h(1200): note: see declaration of 'cocos2d::Node::boundingBox'
+c:\users\100702721\desktop\new folder\cavern-crusaders-master\cavern-crusaders\classes\helloworldscene.cpp(222): warning C4996: 'cocos2d::Node::boundingBox': was declared deprecated
+  c:\users\100702721\desktop\cocos libraries\cocos2d-x-3.17\cocos\2d\ccnode.h(1200): note: see declaration of 'cocos2d::Node::boundingBox'
+c:\users\100702721\desktop\new folder\cavern-crusaders-master\cavern-crusaders\classes\helloworldscene.cpp(226): warning C4996: 'cocos2d::Node::boundingBox': was declared deprecated
+  c:\users\100702721\desktop\cocos libraries\cocos2d-x-3.17\cocos\2d\ccnode.h(1200): note: see declaration of 'cocos2d::Node::boundingBox'
+  Cavern-Crusaders.vcxproj -> C:\Users\100702721\Desktop\New folder\Cavern-Crusaders-master\Cavern-Crusaders\proj.win32\Debug.win32\Cavern-Crusaders.exe
+  Cavern-Crusaders.vcxproj -> C:\Users\100702721\Desktop\New folder\Cavern-Crusaders-master\Cavern-Crusaders\proj.win32\Debug.win32\Cavern-Crusaders.pdb (Full PDB)
+  0 File(s) copied
