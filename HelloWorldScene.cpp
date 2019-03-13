@@ -89,8 +89,31 @@ bool HelloWorld::init()
 	//Allow for the update() function to be called by cocos
 	this->scheduleUpdate();
 
+	// ------------- Timer Score ------------- 
+	// ---------------------------------------
 
+	//Add the score count to the screen
+	scoreCount = Label::createWithTTF("0", "fonts/8-bit pusab.ttf", 60);
+	if (scoreCount == nullptr)
+	{
+		problemLoading("'fonts/8-bit pusab.ttf'");
+	}
+	else
+	{
+		// colour and position the text on the center top of the screen
+		scoreCount->setColor(Color3B::GRAY);
+		scoreCount->setPosition(Vec2(origin.x + visibleSize.width / 2,
+			origin.y + visibleSize.height - scoreCount->getContentSize().height - 80.0f));
 
+		// add the scoreCount text as a child to this layer
+		this->addChild(scoreCount, 1);
+	}
+
+	//set beginning time to 0
+	time = 0;
+
+	//call the TimerMethod to count up by 1s increments
+	this->schedule(schedule_selector(HelloWorld::TimerMethod), 1.0f);
 
 	return true;
 }
@@ -291,6 +314,19 @@ void HelloWorld::initObstacles()
 
 	m_FallingStonesManager = new FallingStonesManager(this);
 	m_FallingStonesManager->Generate();
+}
+
+// ------------- Timer Function ------------- 
+// ------------------------------------------ 
+void HelloWorld::TimerMethod(float dt)
+{
+	time += dt;
+	__String * timeToDisplay = __String::createWithFormat("%.0f", time);
+	scoreCount->setString(timeToDisplay->getCString());
+
+	//Insert different difficulty setting here
+	//if (time == ? ) -> Level 1, 2, 3, 4, so on...
+
 }
 
 void HelloWorld::menuCloseCallback(Ref* pSender)

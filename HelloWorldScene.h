@@ -79,6 +79,11 @@ public:
 	void initSprites();
 	void initObstacles();
 
+	//Timer Score Functions and Data
+	void TimerMethod(float dt);
+	cocos2d::Label *scoreCount;
+	float time;
+
 private:
 	//primitive Square
 	//BathMat::PrimitiveSquare m_MySquare{ cocos2d::Vec2(550.0f,150.0f),cocos2d::Vec2(700.0f,250.0f) };
