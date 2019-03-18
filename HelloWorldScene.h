@@ -57,6 +57,8 @@ public:
 	cocos2d::Sprite* backgroundFront;
 	cocos2d::Sprite* backgroundFront2;
 	cocos2d::Sprite* backgroundFront3;
+	//temp death zone sprite
+	cocos2d::Sprite* deathZone;
 	//sprite physicis body
 	cocos2d::PhysicsBody *MinerPhys;
 	//keyboard listiner
@@ -79,10 +81,20 @@ public:
 	void initSprites();
 	void initObstacles();
 
+	//back of screen area 
+	BathMat::PrimitiveSquare m_MySquare{ cocos2d::Vec2(0.0f,0.0f),cocos2d::Vec2(150.0f,1080.0f) };
+
 	//Timer Score Functions and Data
 	void TimerMethod(float dt);
 	cocos2d::Label *scoreCount;
 	float time;
+
+	//Pause Menu Items
+	void PauseScreen(Ref *pSender);
+
+	//player and back of screen collision
+	Rect PlayerCollision;
+	Rect DeathCollision;
 
 private:
 	//primitive Square

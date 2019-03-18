@@ -23,7 +23,9 @@
  ****************************************************************************/
 
 #include "HelloWorldScene.h"
+#include "PauseMenuScene.h"
 #include "SimpleAudioEngine.h"
+#include "DeathScene.h"
 
 USING_NS_CC;
 
@@ -82,9 +84,12 @@ bool HelloWorld::init()
 	this->addChild(backgroundFront, -1);
 	this->addChild(backgroundFront2, -1);
 	this->addChild(backgroundFront3, -1);
+	this->addChild(deathZone, 3);
 	this->addChild(Miner, 1);
 	this->addChild(edgeNode, 2);
 
+	//primitive for the back of the screen 
+	addChild(m_MySquare.getPrimitive());
 
 	//Allow for the update() function to be called by cocos
 	this->scheduleUpdate();
@@ -114,6 +119,13 @@ bool HelloWorld::init()
 
 	//call the TimerMethod to count up by 1s increments
 	this->schedule(schedule_selector(HelloWorld::TimerMethod), 1.0f);
+
+	//Pause Menu Scene
+	auto pause_item = MenuItemFont::create("Pause", CC_CALLBACK_1(HelloWorld::PauseScreen, this));
+	pause_item->setPosition(1800.0f, 1000.0f);
+	auto *menu = Menu::create(pause_item, nullptr);
+	menu->setPosition(Point(0, 0));
+	this->addChild(menu);
 
 	return true;
 }
@@ -205,6 +217,20 @@ void HelloWorld::update(float deltaTime)
 	if (key_D == true)
 		MinerPhys->applyForce(Vec2(100, 0));
 
+	PlayerCollision = Miner->getBoundingBox();
+	DeathCollision = deathZone->getBoundingBox();
+
+	//death condition
+	if (PlayerCollision.intersectsRect(DeathCollision))
+	{
+		//send score to death screen
+		DeathScene ds;
+		ds.getScore(time);
+
+		//send to death screen
+		auto scene = DeathScene::createScene();
+		Director::getInstance()->pushScene(scene);
+	}
 }
 
 
@@ -286,12 +312,22 @@ void HelloWorld::initSprites()
 	backgroundFront3->setAnchorPoint(Vec2(0.0f, 0.0f));
 	backgroundFront3->setPosition(backgroundFront2->boundingBox().size.width - 1, this->boundingBox().getMinY());
 
-	//just a standded in sprite for the character
+	// ------------------- Death Zone ------------------- 
+	// --------------------------------------------------
+	deathZone = Sprite::create("TempDeathZone.png");
+	deathZone->setScale(0.3f, 2.0f);
+	//backgroundFront->setAnchorPoint(Vec2(0.0f, 0.0f));
+	deathZone->setPosition(this->boundingBox().getMinX() + 75.0f, this->boundingBox().getMinY() + 510.0f);
+
+	//just a stand in sprite for the character
 	Miner = Sprite::create("Character Rough Right.png");
 	Miner->setScale(0.4f);
-	Miner->setPosition(this->boundingBox().getMinX() + 200.0f, this->boundingBox().getMidY() - 200.0f);
+	Miner->setPosition(this->boundingBox().getMinX() + 350.0f, this->boundingBox().getMidY() - 200.0f);
 	//apply physicsBody to the sprite
 	Miner->setPhysicsBody(MinerPhys);
+
+	//PlayerCollision = Miner->getBoundingBox();
+	//DeathCollision = deathZone->getBoundingBox();
 }
 
 void HelloWorld::initObstacles()
@@ -328,6 +364,18 @@ void HelloWorld::TimerMethod(float dt)
 	//if (time == ? ) -> Level 1, 2, 3, 4, so on...
 
 }
+
+// ------------- Pause Menu Function ------------- 
+// ----------------------------------------------- 
+void HelloWorld::PauseScreen(Ref * pSender)
+{
+	CCLOG("Pause");
+
+	//pauses game and goes to the pause screen
+	auto scene = PauseScene::createScene();
+	Director::getInstance()->pushScene(scene);
+}
+
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
