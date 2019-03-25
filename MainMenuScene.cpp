@@ -54,14 +54,62 @@ bool MainScene::init()
 		closeItem->setPosition(Vec2(x, y));
 	}
 
-	//Menu
-	auto menu_item_1 = MenuItemFont::create("Start", CC_CALLBACK_1(MainScene::StartGame, this));
-	auto menu_item_2 = MenuItemFont::create("Instructions", CC_CALLBACK_1(MainScene::Instructions, this));
-	auto menu_item_3 = MenuItemFont::create("Exit", CC_CALLBACK_1(MainScene::ExitGame, this));
+	//background animation
+	//https://gamedev.stackexchange.com/questions/82877/playing-a-sprite-sheet-animation-in-cocos2d-x
+	auto cacher = SpriteFrameCache::getInstance();
+	cacher->addSpriteFramesWithFile("Sprites/texture.plist");
 
-	menu_item_1->setPosition(Point(visibleSize.width / 2, (visibleSize.height / 5) * 4));
-	menu_item_2->setPosition(Point(visibleSize.width / 2, (visibleSize.height / 5) * 3));
-	menu_item_3->setPosition(Point(visibleSize.width / 2, (visibleSize.height / 5) * 2));
+	Sprite* someSprite = Sprite::createWithSpriteFrameName("frame0000.png");
+
+	// load all the animation frames into an array
+	Vector<SpriteFrame*> frames;
+	for (int i = 0; i <= 8; i++)
+	{
+		std::stringstream ss;
+		ss << "frame000" << i << ".png";
+		frames.pushBack(cacher->getSpriteFrameByName(ss.str()));
+		frames.pushBack(cacher->getSpriteFrameByName(ss.str()));
+		i++;
+	}
+	for (int i = 10; i <= 30; i++)
+	{
+		std::stringstream ss;
+		ss << "frame00" << i << ".png";
+		frames.pushBack(cacher->getSpriteFrameByName(ss.str()));
+		frames.pushBack(cacher->getSpriteFrameByName(ss.str()));
+		i++;
+	}
+
+	// play the animation
+	Animation* anim = Animation::createWithSpriteFrames(frames, 0.05f);
+	someSprite->runAction(CCRepeatForever::create(Animate::create(anim)));
+	someSprite->setPosition(visibleSize.width/2, visibleSize.height/2);
+	someSprite->setScale(1.05);
+
+	this->addChild(someSprite);
+
+	//background music
+	if (CocosDenshion::SimpleAudioEngine::getInstance()->isBackgroundMusicPlaying() == false)
+	{
+		CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic("Sound/02_01.mp3");
+		CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("Sound/02_01.mp3", true);
+	}
+	else
+	{
+		CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+	}
+
+	//preload button sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("Sound/sound_ex_machina_Buttons+-+Stone+Button.mp3");
+
+	//Menu
+	auto menu_item_1 = MenuItemImage::create("menus/MAIN Play Button.png", "menus/MAIN Play Button Pressed.png", CC_CALLBACK_1(MainScene::StartGame, this));
+	auto menu_item_2 = MenuItemImage::create("menus/MAIN How Button.png", "menus/MAIN How Button Pressed.png", CC_CALLBACK_1(MainScene::Instructions, this));
+	auto menu_item_3 = MenuItemImage::create("menus/MAIN Exit Button.png", "menus/MAIN Exit Button Pressed.png", CC_CALLBACK_1(MainScene::ExitGame, this));
+
+	menu_item_1->setPosition(Point((visibleSize.width / 4) * 3, (visibleSize.height / 5) * 3));
+	menu_item_2->setPosition(Point((visibleSize.width / 4) * 3, (visibleSize.height / 5) * 2));
+	menu_item_3->setPosition(Point((visibleSize.width / 4) * 3, (visibleSize.height / 5) * 1.3));
 
 	auto *menu = Menu::create(menu_item_1, menu_item_2, menu_item_3, nullptr);
 	menu->setPosition(Point(0, 0));
@@ -74,6 +122,12 @@ void MainScene::StartGame(Ref * pSender)
 {
 	CCLOG("Begin");
 
+	//button sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("Sound/sound_ex_machina_Buttons+-+Stone+Button.mp3");
+
+	//stop music
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
+
 	//pauses game but returns in the same game
 	auto scene = HelloWorld::createScene();
 	Director::getInstance()->pushScene(scene);
@@ -82,6 +136,12 @@ void MainScene::StartGame(Ref * pSender)
 void MainScene::Instructions(Ref * pSender)
 {
 	CCLOG("Instructions");
+
+	//button sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("Sound/sound_ex_machina_Buttons+-+Stone+Button.mp3");
+
+	//stop music
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
 
 	//pauses game but returns in the same game
 	auto scene = InstructionScene::createScene();
@@ -92,6 +152,13 @@ void MainScene::Instructions(Ref * pSender)
 void MainScene::ExitGame(Ref * pSender)
 {
 	CCLOG("Exit");
+	
+	//button sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("Sound/sound_ex_machina_Buttons+-+Stone+Button.mp3");
+	
+	//wait to exit for sound effect
+	std::chrono::seconds duration(1);
+	std::this_thread::sleep_for(duration);
 
 	//should restart game
 	Director::getInstance()->popScene();

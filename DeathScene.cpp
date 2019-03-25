@@ -5,8 +5,12 @@
 
 USING_NS_CC;
 
-Scene* DeathScene::createScene()
+unsigned int score;
+
+
+Scene* DeathScene::createScene(unsigned int tempScore)
 {
+	score = tempScore;
 	auto scene = Scene::create();
 	auto layer = DeathScene::create();
 	scene->addChild(layer);
@@ -55,27 +59,57 @@ bool DeathScene::init()
 	}
 
 	//Menu
-	auto menu_item_1 = MenuItemFont::create("Restart", CC_CALLBACK_1(DeathScene::GameReturn, this));
-	auto menu_item_2 = MenuItemFont::create("Main Menu", CC_CALLBACK_1(DeathScene::MenuReturn, this));
-	auto menu_item_3 = MenuItemFont::create("Exit", CC_CALLBACK_1(DeathScene::ExitGame, this));
+	cocos2d::Sprite* background;
+	background = Sprite::create("menus/Death Screen No Buttons.png");
+	background->setScale(1.05f);
+	background->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
+	this->addChild(background, -1);
 
-	menu_item_1->setPosition(Point(visibleSize.width / 2, (visibleSize.height / 5) * 4));
-	menu_item_2->setPosition(Point(visibleSize.width / 2, (visibleSize.height / 5) * 3));
-	menu_item_3->setPosition(Point(visibleSize.width / 2, (visibleSize.height / 5) * 2));
+	auto menu_item_1 = MenuItemImage::create("menus/DEATH Play Again Button.png", "menus/DEATH Play Again Button Pressed.png", CC_CALLBACK_1(DeathScene::GameReturn, this));
+	auto menu_item_2 = MenuItemImage::create("menus/DEATH Main Menu Button.png", "menus/DEATH Main Menu Button Pressed.png", CC_CALLBACK_1(DeathScene::MenuReturn, this));
+	auto menu_item_3 = MenuItemImage::create("menus/DEATH Exit Game Button.png", "menus/DEATH Exit Game Button Pressed.png", CC_CALLBACK_1(DeathScene::ExitGame, this));
+
+	menu_item_1->setPosition(Point(visibleSize.width / 2, (visibleSize.height / 10) * 6 + 50.0f));
+	//menu_item_1->setScale(1.4f);
+	menu_item_2->setPosition(Point(visibleSize.width / 2, (visibleSize.height / 10) * 3.5));
+	//menu_item_2->setScale(0.8f);
+	menu_item_3->setPosition(Point((visibleSize.width / 2) + 6.0f, (visibleSize.height / 10) * 2.0 + 3.0f));
+	//menu_item_3->setScale(0.8f);
 
 	auto *menu = Menu::create(menu_item_1, menu_item_2, menu_item_3, nullptr);
 	menu->setPosition(Point(0, 0));
 	this->addChild(menu);
 
-	//display score
-	scoreCount = Label::createWithTTF("0", "fonts/8-bit pusab.ttf", 60);
-	scoreCount->setColor(Color3B::GRAY);
-	scoreCount->setPosition(Vec2(origin.x + visibleSize.width / 2,
-		origin.y + visibleSize.height - scoreCount->getContentSize().height - 80.0f));
-	this->addChild(scoreCount, 2);
+	//highscores
+	UserDefault *def = UserDefault::getInstance();
 
-	__String * DisplayScore = __String::createWithFormat("%.0f", p_score);
-	scoreCount->setString(DisplayScore->getCString());
+	auto highScore = def->getIntegerForKey("HIGHSCORE", 0);
+
+	if (score > highScore)
+	{
+		highScore = score;
+		def->setIntegerForKey("HIGHSCORE", highScore);
+	}
+
+	def->flush();
+
+	//score display
+	__String *tempScore = __String::createWithFormat("%i", score);
+	auto currentScore = LabelTTF::create( tempScore->getCString(), "fonts/8-bit pusab.ttf", 60);
+	currentScore->setPosition(395.0f, 240.0f);
+	currentScore->setScale(1.0f, 1.5f);
+	currentScore->setColor(Color3B::BLACK);
+	this->addChild(currentScore);
+
+	__String *tempHighScore = __String::createWithFormat("%i", highScore);
+	auto highScoreLabel = LabelTTF::create(tempHighScore->getCString(), "fonts/8-bit pusab.ttf", 60);
+	highScoreLabel->setPosition(1525.0f, 240.0f);
+	highScoreLabel->setScale(1.0f, 1.5f);
+	highScoreLabel->setColor(Color3B::BLACK);
+	this->addChild(highScoreLabel);
+
+	//Losing sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("Sound/Game_Over_Theme.mp3");
 
 	return true;
 }
@@ -83,6 +117,9 @@ bool DeathScene::init()
 void DeathScene::GameReturn(Ref * pSender)
 {
 	CCLOG("New Game");
+
+	//button sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("Sound/sound_ex_machina_Buttons+-+Stone+Button.mp3");
 
 	//pauses game but returns to the same game
 	auto scene = HelloWorld::createScene();
@@ -95,7 +132,12 @@ void DeathScene::MenuReturn(Ref * pSender)
 {
 	CCLOG("Return");
 
+	//button sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("Sound/sound_ex_machina_Buttons+-+Stone+Button.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("Sound/02_01.mp3", true);
+
 	//exit game and returns to the main menu
+	Director::getInstance()->popScene();
 	Director::getInstance()->popScene();
 }
 
@@ -103,14 +145,17 @@ void DeathScene::ExitGame(Ref * pSender)
 {
 	CCLOG("Exit");
 
+	//button sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("Sound/sound_ex_machina_Buttons+-+Stone+Button.mp3");
+
+	//wait to exit for sound effect
+	std::chrono::seconds duration(1);
+	std::this_thread::sleep_for(duration);
+
 	//exit the game and exit the program
 	Director::getInstance()->popScene();
 	Director::getInstance()->popScene();
-}
-
-void DeathScene::getScore(float score)
-{
-	p_score = score;
+	Director::getInstance()->popScene();
 }
 
 void DeathScene::menuCloseCallback(Ref* pSender)

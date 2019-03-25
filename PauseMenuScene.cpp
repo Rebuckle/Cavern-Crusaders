@@ -54,13 +54,22 @@ bool PauseScene::init()
 	}
 
 	//Menu
-	auto menu_item_1 = MenuItemFont::create("Continue", CC_CALLBACK_1(PauseScene::GameReturn, this));
-	auto menu_item_2 = MenuItemFont::create("Main Menu", CC_CALLBACK_1(PauseScene::MenuReturn, this));
-	auto menu_item_3 = MenuItemFont::create("Exit", CC_CALLBACK_1(PauseScene::ExitGame, this));
+	cocos2d::Sprite* background;
+	background = Sprite::create("menus/Pause Screen No Buttons.png");
+	background->setScale(1.05f);
+	background->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
+	this->addChild(background, -1);
 
-	menu_item_1->setPosition(Point(visibleSize.width / 2, (visibleSize.height / 5) * 4));
-	menu_item_2->setPosition(Point(visibleSize.width / 2, (visibleSize.height / 5) * 3));
-	menu_item_3->setPosition(Point(visibleSize.width / 2, (visibleSize.height / 5) * 2));
+	auto menu_item_1 = MenuItemImage::create("menus/PAUSE Continue Button.png", "menus/PAUSE Continue Button Pressed.png", CC_CALLBACK_1(PauseScene::GameReturn, this));
+	auto menu_item_2 = MenuItemImage::create("menus/PAUSE Main Menu Button.png", "menus/PAUSE Main Menu Button Pressed.png", CC_CALLBACK_1(PauseScene::MenuReturn, this));
+	auto menu_item_3 = MenuItemImage::create("menus/PAUSE Exit Game Button.png", "menus/PAUSE Exit Game Button Pressed.png", CC_CALLBACK_1(PauseScene::ExitGame, this));
+
+	menu_item_1->setPosition(Point(visibleSize.width / 2, (visibleSize.height / 10) * 6));
+	menu_item_1->setScale(1.4f);
+	menu_item_2->setPosition(Point(visibleSize.width / 2, (visibleSize.height / 10) * 3.5));
+	menu_item_2->setScale(0.8f);
+	menu_item_3->setPosition(Point((visibleSize.width / 2)+6.0f, (visibleSize.height / 10) * 2.0));
+	menu_item_3->setScale(0.8f);
 
 	auto *menu = Menu::create(menu_item_1, menu_item_2, menu_item_3, nullptr);
 	menu->setPosition(Point(0, 0));
@@ -73,6 +82,10 @@ void PauseScene::GameReturn(Ref * pSender)
 {
 	CCLOG("Return");
 
+	//button sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("Sound/sound_ex_machina_Buttons+-+Stone+Button.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("Sound/final_rush_music.mp3", true);
+
 	//pauses game but returns to the same game
 	Director::getInstance()->popScene();
 }
@@ -80,6 +93,10 @@ void PauseScene::GameReturn(Ref * pSender)
 void PauseScene::MenuReturn(Ref * pSender)
 {
 	CCLOG("Return");
+
+	//button sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("Sound/sound_ex_machina_Buttons+-+Stone+Button.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("Sound/02_01.mp3", true);
 
 	//exit game and returns to the main menu
 	Director::getInstance()->popScene();
@@ -89,6 +106,13 @@ void PauseScene::MenuReturn(Ref * pSender)
 void PauseScene::ExitGame(Ref * pSender)
 {
 	CCLOG("Exit");
+
+	//button sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("Sound/sound_ex_machina_Buttons+-+Stone+Button.mp3");
+
+	//wait to exit for sound effect
+	std::chrono::seconds duration(1);
+	std::this_thread::sleep_for(duration);
 	
 	//exit the game and exit the program
 	Director::getInstance()->popScene();

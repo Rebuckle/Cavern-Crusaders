@@ -76,6 +76,10 @@ void InstructionScene::MenuReturn(Ref * pSender)
 {
 	CCLOG("Return To The Main Menu");
 	
+	//button sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("Sound/sound_ex_machina_Buttons+-+Stone+Button.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("Sound/02_01.mp3", true);
+
 	Director::getInstance()->popScene();
 }
 

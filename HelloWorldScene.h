@@ -96,6 +96,9 @@ public:
 	Rect PlayerCollision;
 	Rect DeathCollision;
 
+	CCTMXTiledMap *_tileMap;
+	CCTMXLayer *_background;
+
 private:
 	//primitive Square
 	//BathMat::PrimitiveSquare m_MySquare{ cocos2d::Vec2(550.0f,150.0f),cocos2d::Vec2(700.0f,250.0f) };
@@ -111,6 +114,8 @@ private:
 	bool key_D = false;
 	//Size of window
 	cocos2d::Size size;
+
+
 };
 
 #endif // __HELLOWORLD_SCENE_H__

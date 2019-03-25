@@ -7,7 +7,7 @@ using namespace cocos2d;
 class DeathScene : public cocos2d::Layer
 {
 public:
-	static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene(unsigned int tempScore);
 
 	virtual bool init();
 
@@ -22,10 +22,6 @@ public:
 	void GameReturn(Ref *pSender);
 	void MenuReturn(Ref *pSender);
 	void ExitGame(Ref *pSender);
-	void getScore(float score);
-
-	cocos2d::Label *scoreCount;
-	float p_score;
 };
 
 #endif // !__DEATH_SCENE_H__

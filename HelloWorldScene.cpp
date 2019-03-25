@@ -71,6 +71,12 @@ bool HelloWorld::init()
 	initSprites();
 	initObstacles();
 
+	//_tileMap = new CCTMXTiledMap();
+	//_tileMap->initWithTMXFile("TileMap.tmx");
+	//_background = _tileMap->layerNamed("Background");
+
+	//this->addChild(_tileMap);
+
 	//edgenode for edge of screen collisons 
 	auto edgeBody = PhysicsBody::createEdgeBox(visibleSize, PHYSICSBODY_MATERIAL_DEFAULT, 3);
 	auto edgeNode = Node::create();
@@ -87,6 +93,11 @@ bool HelloWorld::init()
 	this->addChild(deathZone, 3);
 	this->addChild(Miner, 1);
 	this->addChild(edgeNode, 2);
+
+	//Background music
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic("Sound/final_rush_music.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("Sound/final_rush_music.mp3", true);
+	//CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic();
 
 	//primitive for the back of the screen 
 	addChild(m_MySquare.getPrimitive());
@@ -121,8 +132,8 @@ bool HelloWorld::init()
 	this->schedule(schedule_selector(HelloWorld::TimerMethod), 1.0f);
 
 	//Pause Menu Scene
-	auto pause_item = MenuItemFont::create("Pause", CC_CALLBACK_1(HelloWorld::PauseScreen, this));
-	pause_item->setPosition(1800.0f, 1000.0f);
+	auto pause_item = MenuItemImage::create("menus/GAME Pause Button.png", "menus/GAME Pause Button Pressed.png", CC_CALLBACK_1(HelloWorld::PauseScreen, this));
+	pause_item->setPosition(1650.0f, 900.0f);
 	auto *menu = Menu::create(pause_item, nullptr);
 	menu->setPosition(Point(0, 0));
 	this->addChild(menu);
@@ -223,12 +234,11 @@ void HelloWorld::update(float deltaTime)
 	//death condition
 	if (PlayerCollision.intersectsRect(DeathCollision))
 	{
-		//send score to death screen
-		DeathScene ds;
-		ds.getScore(time);
+		//stop music
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
 
 		//send to death screen
-		auto scene = DeathScene::createScene();
+		auto scene = DeathScene::createScene(time);
 		Director::getInstance()->pushScene(scene);
 	}
 }
@@ -370,6 +380,12 @@ void HelloWorld::TimerMethod(float dt)
 void HelloWorld::PauseScreen(Ref * pSender)
 {
 	CCLOG("Pause");
+
+	//button sound
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("Sound/sound_ex_machina_Buttons+-+Stone+Button.mp3");
+
+	//stop music
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
 
 	//pauses game and goes to the pause screen
 	auto scene = PauseScene::createScene();
