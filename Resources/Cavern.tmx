@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="150" height="24" tilewidth="96" tileheight="96" infinite="0" backgroundcolor="#ffffff" nextlayerid="11" nextobjectid="3">
+ <tileset firstgid="1" source="CavernTiles.tsx"/>
+ <tileset firstgid="19" source="ObstacleTiles.tsx"/>
+ <tileset firstgid="22" source="meta_tiles.tsx"/>
+	<image source="ObstacleTiles.png" width="341" height="171"/>
+
+	<layer id="8" name="Background" width="150" height="24">
+  <data encoding="base64" compression="zlib">
+   eJzt2DsKhEAQQMHB1GhR739Vkw0Ef4P27LZYBS+ZQFpsEO1LKb0kSS/tIzUIAAAAAADgzPQNIgwXG/8xLOnZDSLZJyL9ap+8L9/BsyVStn3KNg9rT/9We8KMGWz994k+y7oz00E1au5p73pR58s5lvPfOavVSQ2aAZZ5JXs=
+  </data>
+ </layer>
+ <objectgroup id="9" name="Objects">
+  <object id="2" name="SpawnPoint" x="0" y="2115" width="96" height="96"/>
+ </objectgroup>
+ <layer id="10" name="Meta" width="150" height="24">
+  <data encoding="base64" compression="zlib">
+   eJzt1zsKwCAQBUBP4f2PmiZFyAcCviQrmYFtVotFH4itAQAAAAAAAADwpr4WJPSBgj3ZIEmeSHorT97Lf3C3JFXLU7V5OJr9rzbDjBWcndETvYr3MZrtO3uv9qT627VUwZcWv24HvQ==
+  </data>
+ </layer>
+</map>

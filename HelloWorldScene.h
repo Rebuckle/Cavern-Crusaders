@@ -38,35 +38,40 @@ using namespace cocos2d;
 class HelloWorld : public cocos2d::Scene
 {
 public:
-	static cocos2d::Scene* createScene();
+    static cocos2d::Scene* createScene();
 
-	virtual bool init();
+    virtual bool init();
 	//Main Update Loop
 	void update(float deltaTime);
-
-	// a selector callback
-	void menuCloseCallback(cocos2d::Ref* pSender);
-
-	// implement the "static create()" method manually
-	CREATE_FUNC(HelloWorld);
+    
+    // a selector callback
+    void menuCloseCallback(cocos2d::Ref* pSender);
+    
+    // implement the "static create()" method manually
+    CREATE_FUNC(HelloWorld);
 	//sprite
 	cocos2d::Sprite *Miner;
 	cocos2d::Sprite* background;
 	cocos2d::Sprite* background2;
 	cocos2d::Sprite* background3;
+
 	cocos2d::Sprite* backgroundFront;
 	cocos2d::Sprite* backgroundFront2;
 	cocos2d::Sprite* backgroundFront3;
-	//temp death zone sprite
-	cocos2d::Sprite* deathZone;
+
+
+	cocos2d::Sprite *Platforms;
 	//sprite physicis body
 	cocos2d::PhysicsBody *MinerPhys;
+	cocos2d::PhysicsBody *PlatformPhys;
 	//keyboard listiner
 	void initListeners();
 	void initKeyboardListener();
 	//callback
 	void keyDownCallback(EventKeyboard::KeyCode keycode, Event* event);
 	void keyUpCallback(EventKeyboard::KeyCode keycode, Event* event);
+
+	DrawNode* m_Platform;
 
 	//Obstacles
 	PlatformManager *m_PlatformManager;
@@ -81,27 +86,46 @@ public:
 	void initSprites();
 	void initObstacles();
 
-	//back of screen area 
-	BathMat::PrimitiveSquare m_MySquare{ cocos2d::Vec2(0.0f,0.0f),cocos2d::Vec2(150.0f,1080.0f) };
 
 	//Timer Score Functions and Data
 	void TimerMethod(float dt);
 	cocos2d::Label *scoreCount;
 	float time;
+	
+	
 
-	//Pause Menu Items
-	void PauseScreen(Ref *pSender);
+	TMXTiledMap *_map;
 
-	//player and back of screen collision
-	Rect PlayerCollision;
-	Rect DeathCollision;
+	//---Collision Layer---//
+	CCTMXLayer *_meta;
+	CCPoint tileCoordForPosition(CCPoint position);
 
-	CCTMXTiledMap *_tileMap;
-	CCTMXLayer *_background;
+	//---Spawning Player---//
+	CCSprite *_player;
+	void setPlayerPosition(CCPoint position);
+	void setViewPointCenter(CCPoint position);
+
+
 
 private:
 	//primitive Square
 	//BathMat::PrimitiveSquare m_MySquare{ cocos2d::Vec2(550.0f,150.0f),cocos2d::Vec2(700.0f,250.0f) };
+
+	//---Tiled Map---//
+	TMXTiledMap *_tileMap;
+	TMXLayer *_background;
+
+	TMXTiledMap *_tileMapLvl2;
+	TMXTiledMap *_tileMapLvl3;
+	TMXTiledMap *_tileMapLvl4;
+	TMXTiledMap *_tileMapLvl5;
+	TMXTiledMap *_tileMapLvl6;
+	TMXTiledMap *_tileMapLvl7;
+	TMXTiledMap *_tileMapLvl8;
+
+
+	//---Larry---//
+	Sprite *_Larry;
 
 	void SetPhysicsWorld(cocos2d::PhysicsWorld *world) { sceneWorld = world; };
 	cocos2d::PhysicsWorld *sceneWorld;
@@ -114,6 +138,11 @@ private:
 	bool key_D = false;
 	//Size of window
 	cocos2d::Size size;
+
+	bool onContactBegin(cocos2d::PhysicsContact &contact);
+
+
+	
 
 
 };

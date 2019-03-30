@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="2">
+ <tileset firstgid="1" name="tmw_desert_spacing" tilewidth="32" tileheight="32" spacing="1" margin="1" tilecount="48" columns="8">
+  <image source="tmw_desert_spacing.png" width="265" height="199"/>
+ </tileset>
+ <tileset firstgid="49" source="meta_tiles.tsx"/>
+ <layer id="1" name="Background" width="50" height="50">
+  <data encoding="base64" compression="zlib">
+   eJztmulOwzAMgAuIbbTAOCZOqWziUGEcfaQ9Go/Co+FIqWRZTWLnaMboj09Vu8Txt9jRKq0uiqIGWn29Be4ScE/WiY2K26D7FfAEvEXkGXhEazSJfF5Q3BVZMwY4ZqvXG2I/BB4bDdtj3A/5frwXvJ7F2M6Hj4H2o0ZxXwt3366BCTDVzBjz1mSd1Kjv6sFyVWM+gVNgrjnTz23zGub6vkw9OUEex8w5M2ZOE495cwclY0xquv329SiRR04fjse1hZJgG8vhhpGP4go4FHqYer0hDk0g0hz6zhEfWuLRBuCzfiyPmnjEPCNTeix7wB7LgDiUlB7qN88XudI+5+xLXxx6zVlXQ9dXao+hXEYPvs/okc9jV+pq9Bg9Unj0ufx1jyHy/+8ee8C+g87DNS4mB4Ic1dijor+Xc1MhD1eOFRqzAC4ygvNS95fI49wwB3L+ph7YPxfSPoScf2wepnPW9cz23Maue7jGuzxccWOdzbk8Yta2xMN03+cRWq+SGvT14vRHSL1Ke8l3v7bNwzRHuj/c/ojRLxKPGP0R2yOkp0I8pLUSWvupPKrIHpxeylVXpvqX9ILPnG3wiNVLqT18P0/lAb/lNxX6r0il7010MX0/94HGXFjOK5/6zo3yoO9anUfOd0Mp6t3xFzN+Apc=
+  </data>
+ </layer>
+ <layer id="3" name="Meta" width="50" height="50">
+  <data encoding="base64" compression="zlib">
+   eJzt0zEKgEAQQ9Fcae9/OUlnoYyF4Cb+B9vnw44EAD3W1wNesIaX4mp3YsuTjoSWqUPK7Ljr2t3UkdBgf+lIQcd+2jvSNDRYc0daS/uNN3RIeR3W2pH4r6yhwejYy/m2UxsseTsAAAAAoNsBLoofZQ==
+  </data>
+ </layer>
+ <objectgroup id="2" name="Objects">
+  <object id="1" name="SpawnPoint" x="211.264" y="866.885" width="104.707" height="128.937" rotation="8.85711"/>
+ </objectgroup>
+</map>

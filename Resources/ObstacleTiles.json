@@ -1,0 +1,15 @@
+{ "columns":3,
+ "image":"..\/..\/..\/..\/TileMap_Images\/ObstacleTiles.png",
+ "imageheight":171,
+ "imagewidth":341,
+ "margin":0,
+ "name":"ObstacleTiles",
+ "spacing":0,
+ "tilecount":3,
+ "tiledversion":"1.2.3",
+ "tileheight":106,
+ "tilewidth":106,
+ "transparentcolor":"#ffffff",
+ "type":"tileset",
+ "version":1.2
+}
