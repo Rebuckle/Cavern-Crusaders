@@ -23,9 +23,7 @@
  ****************************************************************************/
 
 #include "HelloWorldScene.h"
-#include "PauseMenuScene.h"
 #include "SimpleAudioEngine.h"
-#include "DeathScene.h"
 
 USING_NS_CC;
 
@@ -47,69 +45,92 @@ Scene* HelloWorld::createScene()
 // Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
 {
-	printf("Error while loading: %s\n", filename);
-	printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
+    printf("Error while loading: %s\n", filename);
+    printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
-	//////////////////////////////
-	// 1. super init first
-	if (!Scene::initWithPhysics())
-	{
-		return false;
-	}
+    //////////////////////////////
+    // 1. super init first
+    if ( !Scene::initWithPhysics() )
+    {
+        return false;
+    }
 	//Get Window Size
 	size = Director::sharedDirector()->getInstance()->getWinSize();
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	/////////////////////////////
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    /////////////////////////////
 
-	//Init the event handlers
-	initListeners();
-	initSprites();
-	initObstacles();
-
+	
+	//--- Tiled Map ---//
 	//_tileMap = new CCTMXTiledMap();
-	//_tileMap->initWithTMXFile("TileMap.tmx");
+	//_tileMap->initWithTMXFile("Cavern.tmx");
 	//_background = _tileMap->layerNamed("Background");
+	//_tileMap->setPosition(Vec2(0, 0));
+	////_tileMap->setScale(10);
+
+	//---TILE MAP LVL 1---//
+	_tileMap = TMXTiledMap::create("Cavern.tmx");
+	addChild(_tileMap, 0, 99);
+
+
+	CCTMXObjectGroup *objectGroup = _tileMap->objectGroupNamed("Objects");
+
+	/*if (objectGroup == NULL) {
+		CCLog("tile map has no objects object layer");
+		return false;
+	}*/
+
+	ValueMap spawnPoint = objectGroup->objectNamed("SpawnPoint");
+
+	int x = spawnPoint["x"].asInt();
+	int y = spawnPoint["y"].asInt();
+
+	_player = new CCSprite();
+	_player->initWithFile("Player.png");
+	_player->setPosition(ccp(x, y));
+
+	this->addChild(_player);
+	//this->setViewPointCenter(_player->getPosition());
+
+	//---Collisions---//
+	_meta = _tileMap->layerNamed("Meta");
+	_meta->setVisible(true);
 
 	//this->addChild(_tileMap);
+
+	
+
+	/*auto map = TMXTiledMap::create("TileMap.tmx");
+	map->setScale(10);
+	this->addChild(map, 10);*/
+
+	//this->addChild(_background);
+
+	//Init the event handlers
+	initListeners(); 
+	initSprites();
+	initObstacles();
+	
 
 	//edgenode for edge of screen collisons 
 	auto edgeBody = PhysicsBody::createEdgeBox(visibleSize, PHYSICSBODY_MATERIAL_DEFAULT, 3);
 	auto edgeNode = Node::create();
 	edgeNode->setPosition(Point(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 	edgeNode->setPhysicsBody(edgeBody);
-	//seting collison bitmask
-	edgeBody->setCollisionBitmask(1);
-	edgeBody->setContactTestBitmask(true);
-
-	//player creation
-	character = Player::create();
-	character->setPosition(this->boundingBox().getMinX() + 400.0f, this->boundingBox().getMidY() - 200.0f);
-	this->addChild(character, 1);
-
+	
 	//Add sprites to the scene
-	this->addChild(background, -2);
-	this->addChild(background2, -2);
-	this->addChild(background3, -2);
+	this->addChild(background, -1);
+	this->addChild(background2, -1);
+	this->addChild(background3, -1);
 	this->addChild(backgroundFront, -1);
 	this->addChild(backgroundFront2, -1);
 	this->addChild(backgroundFront3, -1);
-	this->addChild(deathZone, -3);
-	//this->addChild(Miner, 1);
-	this->addChild(edgeNode, -3);
-	this->addChild(floorZone, -3);
-
-	//Background music
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic("Sound/final_rush_music.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("Sound/final_rush_music.mp3", true);
-	//CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic();
-
-	//primitive for the back of the screen 
-	addChild(m_MySquare.getPrimitive());
+	this->addChild(Miner,1);
+	this->addChild(edgeNode, 2);
 
 	//Allow for the update() function to be called by cocos
 	this->scheduleUpdate();
@@ -140,56 +161,34 @@ bool HelloWorld::init()
 	//call the TimerMethod to count up by 1s increments
 	this->schedule(schedule_selector(HelloWorld::TimerMethod), 1.0f);
 
-	//collapsing cave animation
-	//https://gamedev.stackexchange.com/questions/82877/playing-a-sprite-sheet-animation-in-cocos2d-x
-	auto cacher = SpriteFrameCache::getInstance();
-	cacher->addSpriteFramesWithFile("Sprites/PNG/texture.plist");
 
-	Sprite* someSprite = Sprite::createWithSpriteFrameName("C 01.png");
 
-	// load all the animation frames into an array
-	Vector<SpriteFrame*> frames;
-	for (int i = 1; i <= 9; i++)
-	{
-		std::stringstream ss;
-		ss << "C 0" << i << ".png";
-		frames.pushBack(cacher->getSpriteFrameByName(ss.str()));
-		frames.pushBack(cacher->getSpriteFrameByName(ss.str()));
-		frames.pushBack(cacher->getSpriteFrameByName(ss.str()));
-		//i++;
-	}
-	for (int i = 10; i <= 16; i++)
-	{
-		std::stringstream ss;
-		ss << "C " << i << ".png";
-		frames.pushBack(cacher->getSpriteFrameByName(ss.str()));
-		frames.pushBack(cacher->getSpriteFrameByName(ss.str()));
-		frames.pushBack(cacher->getSpriteFrameByName(ss.str()));
-		//i++;
-	}
-
-	// play the animation
-	Animation* anim = Animation::createWithSpriteFrames(frames, 0.05f);
-	someSprite->runAction(CCRepeatForever::create(Animate::create(anim)));
-	someSprite->setPosition((visibleSize.width / 10) - 60.0f, visibleSize.height / 2);
-	someSprite->setScale(1.05);
-
-	this->addChild(someSprite, 3);
-
-	//Pause Menu Scene
-	auto pause_item = MenuItemImage::create("menus/GAME Pause Button.png", "menus/GAME Pause Button Pressed.png", CC_CALLBACK_1(HelloWorld::PauseScreen, this));
-	pause_item->setPosition(1650.0f, 900.0f);
-	auto *menu = Menu::create(pause_item, nullptr);
-	menu->setPosition(Point(0, 0));
-	this->addChild(menu);
-
-	//adding contact listioner
-	auto contactListener = EventListenerPhysicsContact::create();
-	contactListener->onContactBegin = CC_CALLBACK_1(HelloWorld::onContactBegin, this);
-	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListener, this);
-
-	return true;
+    return true;
 }
+
+//---Collisions---//
+//CCPoint HelloWorld::tileCoordForPosition(CCPoint position)
+//{
+//	int x = position.x / _tileMap->getTileSize().width;
+//	int y = ((_tileMap->getMapSize().height * _tileMap->getTileSize().height) - position.y) / _tileMap->getTileSize().height;
+//	return ccp(x, y);
+//}
+
+//---Spawning Player---//
+//void HelloWorld::setViewPointCenter(CCPoint position) {
+//
+//	CCSize winSize = CCDirector::sharedDirector()->getWinSize();
+//
+//	int x = MAX(position.x, winSize.width / 2);
+//	int y = MAX(position.y, winSize.height / 2);
+//	x = MIN(x, (_tileMap->getMapSize().width * this->_tileMap->getTileSize().width) - winSize.width / 2);
+//	y = MIN(y, (_tileMap->getMapSize().height * _tileMap->getTileSize().height) - winSize.height / 2);
+//	CCPoint actualPosition = ccp(x, y);
+//
+//	CCPoint centerOfView = ccp(winSize.width / 2, winSize.height / 2);
+//	CCPoint viewPoint = ccpSub(centerOfView, actualPosition);
+//	this->setPosition(viewPoint);
+//}
 
 void HelloWorld::initListeners()
 {
@@ -248,95 +247,39 @@ void HelloWorld::keyUpCallback(EventKeyboard::KeyCode keyCode, Event* event)
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
-//the contact function
-bool HelloWorld::onContactBegin(cocos2d::PhysicsContact &contact)
-{
-	return true;
-}
 
 
 void HelloWorld::update(float deltaTime)
 {
-	//flips the player like they were sliding and then retruns them back to the upright postion 
-	auto Sliding = Sequence::create(RotateTo::create(1, -90), DelayTime::create(2.0f), RotateTo::create(1, 0), NULL);
-
 	//update loop for items in the game.
 	//Infinite Looping Background
 	initBackground();
-
+	
 	//Updating the obstacles in the scene
-	m_PlatformManager->update(deltaTime);
-	m_RocksManager->Update(deltaTime);
-	m_DebreeManager->Update(deltaTime);
-	m_FallingStonesManager->Update(deltaTime);
-	m_SpikesManager->Update(deltaTime);
-
-	batOb->Update(deltaTime);
-
-	character->update();
-
+	
+	/*MovingBats *myMovingBats = new MovingBats(cocos2d::Vec2(50, 50), 45.0f, 45.0f, 12, false, cocos2d::Vec2(50, 150), cocos2d::Vec2(50, 0), 10.0f);
+	myMovingBats->update(deltaTime);*/
+	
+	
 	// update the Miner's velocity
-	//new movment changes platers postition
-	//kinda works good starting point
-	if (key_W == true && isJumping == true) 
-	{
-		character->jump();
+	if (key_W == true)
+		setPlayerPosition(Vec2(Miner->getPositionX(), Miner->getPositionY() + 10));
+		//MinerPhys->applyForce(Vec2(0, 200));
+	if (key_S == true)
+		setPlayerPosition(Vec2(Miner->getPositionX(), Miner->getPositionY() - 10));
+	//MinerPhys->applyForce(Vec2(0, 0));
+	if (key_A == true)
+		setPlayerPosition(Vec2(Miner->getPositionX()-10, Miner->getPositionY()));
+	//MinerPhys->applyForce(Vec2(-100, 0));
+	if (key_D == true)
+		setPlayerPosition(Vec2(Miner->getPositionX()+10, Miner->getPositionY()));
+	/*MinerPhys->applyForce(Vec2(100, 0));*/
 
-		//seting jump to falis 
-		isJumping = false;
-	}
-
-	else if (key_S == true) 
-	{
-		// needs to make a slide or jump
-		//got a few ideas scew or something
-		//Miner->runAction(Sliding);
-		character->idle();
-	}
-	else if (key_A == true) 
-	{
-		character->move(0);
-	}
-
-	else if (key_D == true) 
-	{
-		character->move(1);
-	}
-	//make the player moveback so they got to keep moving
-	else
-	{
-		character->idle();
-	}
-
-	//PlayerCollision = Miner->getBoundingBox();
-	DeathCollision = deathZone->getBoundingBox();
-	CharacterCollision = character->getBoundingBox();
-	FloorCollision = floorZone->getBoundingBox();
-	BatCollision = batOb->getBoundingBox();
-
-	if (CharacterCollision.intersectsRect(DeathCollision))
-	{
-		//stop music
-		CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
-
-		//send to death screen
-		auto scene = DeathScene::createScene(time);
-		Director::getInstance()->pushScene(scene);
-	}
-	if (CharacterCollision.intersectsRect(DeathCollision))
-	{
-		//stop music
-		CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
-
-		//send to death screen
-		auto scene = DeathScene::createScene(time);
-		Director::getInstance()->pushScene(scene);
-	}
-	if (CharacterCollision.intersectsRect(FloorCollision)) //allows player to jump only when touching ground
-	{
-		isJumping = true;
-	}
+	
+	
 }
+
+
 void HelloWorld::initBackground()
 {
 	// ------------------- Background Back ------------------- 
@@ -344,6 +287,44 @@ void HelloWorld::initBackground()
 	background->setPosition(background->getPositionX() - 2, background->getPositionY());
 	background2->setPosition(background2->getPositionX() - 2, background2->getPositionY());
 	background3->setPosition(background3->getPositionX() - 2, background3->getPositionY());
+	_tileMap->setPosition(_tileMap->getPositionX() - 4, _tileMap->getPositionY());
+
+
+
+	//tileCoordForPosition(_tileMap->getPosition())
+
+	//Miner->setPosition(_tileMap->getPositionX() - 4, _tileMap->getPositionY());
+	//setPlayerPosition(Vec2(_tileMap->getPositionX(), _tileMap->getPositionY()));
+	if (time >= 52) {
+		_tileMapLvl2->setPosition(_tileMapLvl2->getPositionX() - 4, _tileMapLvl2->getPositionY());
+	}
+	
+	if (time >= 100)
+	{
+		_tileMapLvl3->setPosition(_tileMapLvl3->getPositionX() - 4, _tileMapLvl3->getPositionY());
+	}
+	if (time >= 150)
+	{
+		_tileMapLvl4->setPosition(_tileMapLvl4->getPositionX() - 4, _tileMapLvl4->getPositionY());
+	}
+	if (time >= 200)
+	{
+		_tileMapLvl5->setPosition(_tileMapLvl5->getPositionX() - 4, _tileMapLvl5->getPositionY());
+	}
+	if (time >= 250)
+	{
+		_tileMapLvl6->setPosition(_tileMapLvl6->getPositionX() - 4, _tileMapLvl6->getPositionY());
+	}
+	if (time >= 300)
+	{
+		_tileMapLvl7->setPosition(_tileMapLvl7->getPositionX() - 4, _tileMapLvl7->getPositionY());
+	}
+	if (time >= 350)
+	{
+		_tileMapLvl8->setPosition(_tileMapLvl8->getPositionX() - 4, _tileMapLvl8->getPositionY());
+	}
+
+
 	if (background->getPositionX() < -background->boundingBox().size.width)
 	{
 		background->setPosition(background3->getPositionX() + background3->boundingBox().size.width, background->getPositionY());
@@ -374,78 +355,103 @@ void HelloWorld::initBackground()
 	{
 		backgroundFront3->setPosition(backgroundFront2->getPositionX() + backgroundFront2->boundingBox().size.width, backgroundFront3->getPositionY());
 	}
-}
 
+
+}
 void HelloWorld::initSprites()
 {
+	MinerPhys = PhysicsBody::createBox(Size(110.0f, 125.0f), PhysicsMaterial(0.0f, 0.0f, 1.0f));
+	MinerPhys->setDynamic(true);
+	MinerPhys->setCollisionBitmask(2);
+	MinerPhys->setContactTestBitmask(true);
+
+	
+
 	// ------------------- Background Back ------------------- 
 	// -------------------------------------------------------
 	background = Sprite::create("Background Back.png");
-	background->setScale(1.05f);
+	background->setScale(1.07f);
 	background->setAnchorPoint(Vec2(0.0f, 0.0f));
 	background->setPosition(0, this->boundingBox().getMinY());
 
 	background2 = Sprite::create("Background Back.png");
-	background2->setScale(1.05f);
+	background2->setScale(1.07f);
 	background2->setAnchorPoint(Vec2(0.0f, 0.0f));
 	background2->setPosition(background->boundingBox().size.width - 1, this->boundingBox().getMinY());
 
 	background3 = Sprite::create("Background Back.png");
-	background3->setScale(1.05f);
+	background3->setScale(1.07f);
 	background3->setAnchorPoint(Vec2(0.0f, 0.0f));
 	background3->setPosition(background2->boundingBox().size.width - 1, this->boundingBox().getMinY());
 
 	// ------------------- Background Front ------------------- 
 	// --------------------------------------------------------
 	backgroundFront = Sprite::create("Background front.png");
-	backgroundFront->setScale(1.05f);
+	backgroundFront->setScale(1.07f);
 	backgroundFront->setAnchorPoint(Vec2(0.0f, 0.0f));
 	backgroundFront->setPosition(0, this->boundingBox().getMinY());
 
 	backgroundFront2 = Sprite::create("Background front.png");
-	backgroundFront2->setScale(1.05f);
+	backgroundFront2->setScale(1.07f);
 	backgroundFront2->setAnchorPoint(Vec2(0.0f, 0.0f));
 	backgroundFront2->setPosition(backgroundFront->boundingBox().size.width - 1, this->boundingBox().getMinY());
 
 	backgroundFront3 = Sprite::create("Background front.png");
-	backgroundFront3->setScale(1.05f);
+	backgroundFront3->setScale(1.07f);
 	backgroundFront3->setAnchorPoint(Vec2(0.0f, 0.0f));
 	backgroundFront3->setPosition(backgroundFront2->boundingBox().size.width - 1, this->boundingBox().getMinY());
 
-	// ------------------- Death Zone ------------------- 
-	// --------------------------------------------------
-	deathZone = Sprite::create("TempDeathZone.png");
-	deathZone->setScale(0.3f, 2.0f);
-	deathZone->setPosition(this->boundingBox().getMinX() + 75.0f, this->boundingBox().getMinY() + 510.0f);
+	//just a standded in sprite for the character
+	Miner = Sprite::create("Character Rough Right.png");
+	Miner->setScale(0.3f);
+	Miner->setPosition(this->boundingBox().getMinX(), this->boundingBox().getMidY());
+	//apply physicsBody to the sprite
+	//Miner->setPhysicsBody(MinerPhys);
+	
+	
 
-	// ------------------- Floor Zone ------------------- 
-	// --------------------------------------------------
-	floorZone = Sprite::create("surrounding.png");
-	floorZone->setScale(4.0f, 1.0f);
-	floorZone->setPosition(this->boundingBox().getMinX() + 100.0f, this->boundingBox().getMinY() - 450.0f);
+
+	auto contactListener = EventListenerPhysicsContact::create();
+	contactListener->onContactBegin = CC_CALLBACK_1(HelloWorld::onContactBegin, this);
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListener, this);
 }
+
 
 void HelloWorld::initObstacles()
 {
-	m_PlatformManager = new PlatformManager(this);
-	m_PlatformManager->Generate();
-
+	
+	
+	/*m_PlatformManager = new PlatformManager(this);
 	m_SpikesManager = new SpikesManager(this);
-	m_SpikesManager->Generate();
-
-
 	m_RocksManager = new RocksManager(this);
-	m_RocksManager->Generate();
-
 	m_DebreeManager = new DebreeManager(this);
-	m_DebreeManager->Generate();
+	m_FallingStonesManager = new FallingStonesManager(this);*/
+	
+	//Easy 1 
 
-	m_FallingStonesManager = new FallingStonesManager(this);
-	m_FallingStonesManager->Generate();
+	//m_PlatformManager->GenerateEasy();
+	//m_SpikesManager->GenerateEasy();
+	//m_RocksManager->GenerateEasy();
+	//m_DebreeManager->GenerateEasy();
 
-	//bat function
-	batOb = BatObstacle::create();
-	this->addChild(batOb, 2);
+	/*m_PlatformManager->GenerateEasy3();
+	m_DebreeManager->GenerateEasy3();*/
+	//Easy 2
+
+	/*if (background2->getPositionX() > -background2->boundingBox().size.width - 1000)
+	{
+		m_PlatformManager->GenerateEasy2();
+		m_SpikesManager->GenerateEasy2();
+		m_FallingStonesManager->GenerateEasy();
+	}*/
+
+	/*
+	m_BatsManager = new BatsManager(this);
+	m_BatsManager->Generate();
+	*/
+
+
+	
 }
 
 // ------------- Timer Function ------------- 
@@ -459,58 +465,110 @@ void HelloWorld::TimerMethod(float dt)
 	//Insert different difficulty setting here
 	//if (time == ? ) -> Level 1, 2, 3, 4, so on...
 
-	//spawn bat using time function
-	batSpawn(dt);
-}
-
-// ------------- Pause Menu Function ------------- 
-// ----------------------------------------------- 
-void HelloWorld::PauseScreen(Ref * pSender)
-{
-	CCLOG("Pause");
-
-	//button sound
-	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("Sound/sound_ex_machina_Buttons+-+Stone+Button.mp3");
-
-	//stop music
-	CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
-
-	//pauses game and goes to the pause screen
-	auto scene = PauseScene::createScene();
-	Director::getInstance()->pushScene(scene);
-}
-
-// ------------- Spawn Bat Function ------------- 
-// ---------------------------------------------- 
-void HelloWorld::batSpawn(float dt)
-{
-	spawnTime++;
-
-	if (spawnTime == 20) // spawn after 20 seconds pervious bat
+	/*if (time == 1)
 	{
-		batOb->spawnBat();
+		m_PlatformManager->GenerateEasy();
+		m_SpikesManager->GenerateEasy();
+		m_RocksManager->GenerateEasy();
+		m_DebreeManager->GenerateEasy();
 	}
-	if (spawnTime == 32) // delete after 12 seconds for that is a full loop
+	*/
+	
+	if(time == 52)
 	{
-		batOb->delBat();
-		spawnTime = 0;
+		//---TILE MAP LVL 2---//
+		_tileMapLvl2 = TMXTiledMap::create("Cavern2.tmx");
+		//_tileMapLvl2->setPosition(Vec2(_tileMap->getBoundingBox().size.width -1, this->boundingBox().getMidY()));
+		_tileMapLvl2->setPositionX(1920);
+		addChild(_tileMapLvl2, 0, 100);
 	}
+	if (time == 100)
+	{
+		_tileMapLvl3 = TMXTiledMap::create("Cavern3.tmx");
+		_tileMapLvl3->setPositionX(1920);
+		addChild(_tileMapLvl3, 0, 101);
+	}
+
+	if (time == 150)
+	{
+		_tileMapLvl4 = TMXTiledMap::create("Cavern4.tmx");
+		_tileMapLvl4->setPositionX(1920);
+		addChild(_tileMapLvl4, 0, 102);
+	}
+	if (time == 200)
+	{
+		_tileMapLvl5 = TMXTiledMap::create("Cavern5.tmx");
+		_tileMapLvl5->setPositionX(1920);
+		addChild(_tileMapLvl5, 0, 103);
+	}
+	if (time == 250)
+	{
+		_tileMapLvl6 = TMXTiledMap::create("Cavern6.tmx");
+		_tileMapLvl6->setPositionX(1920);
+		addChild(_tileMapLvl6, 0, 104);
+	}
+	if (time == 300)
+	{
+		_tileMapLvl7 = TMXTiledMap::create("Cavern7.tmx");
+		_tileMapLvl7->setPositionX(1920);
+		addChild(_tileMapLvl7, 0, 105);
+	}
+	if (time == 350)
+	{
+		_tileMapLvl8 = TMXTiledMap::create("Cavern8.tmx");
+		_tileMapLvl8->setPositionX(1920);
+		addChild(_tileMapLvl8, 0, 106);
+	}
+
 }
+
+CCPoint HelloWorld::tileCoordForPosition(CCPoint position)
+{
+	int x = position.x / _tileMap->getTileSize().width;
+	int y = ((_tileMap->getMapSize().height * _tileMap->getTileSize().height) - position.y) / _tileMap->getTileSize().height;
+	return ccp(x, y);
+}
+
+//---Collisions With Tile Map---//
+void HelloWorld::setPlayerPosition(CCPoint position)
+{
+	CCPoint tileCoord = this->tileCoordForPosition(position);
+	int tileGid = _meta->tileGIDAt(tileCoord);
+	if (tileGid) {
+		ValueMap properties = (_tileMap->propertiesForGID(tileGid)).asValueMap();
+		if (!properties.empty()) {
+			CCString *collision;
+			collision = new CCString(properties["Collidable"].asString());
+			if (collision && (collision->compare("true") == 0)) {
+				return;
+			}
+		}
+	}
+	Miner->setPosition(position);
+}
+
+
+bool HelloWorld::onContactBegin(cocos2d::PhysicsContact & contact)
+{
+	
+	return true;
+}
+
 
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
-	//Close the cocos2d-x game scene and quit the application
-	Director::getInstance()->end();
+    //Close the cocos2d-x game scene and quit the application
+    Director::getInstance()->end();
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	exit(0);
+    #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+    exit(0);
 #endif
 
-	/*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() and exit(0) as given above,instead trigger a custom event created in RootViewController.mm as below*/
+    /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() and exit(0) as given above,instead trigger a custom event created in RootViewController.mm as below*/
 
-	//EventCustom customEndEvent("game_scene_close_event");
-	//_eventDispatcher->dispatchEvent(&customEndEvent);
+    //EventCustom customEndEvent("game_scene_close_event");
+    //_eventDispatcher->dispatchEvent(&customEndEvent);
 
 
 }

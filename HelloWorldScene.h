@@ -26,44 +26,38 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
-#include "Primitives.h"
-#include "PlatformManager.h"
-#include "Spikes.h"
-#include "Rocks.h"
-#include "Debree.h"
-#include "Bats.h"
-#include "FallingStones.h"
 #include "Player.h"
-#include "BatObstacle.h"
 using namespace cocos2d;
 
 class HelloWorld : public cocos2d::Scene
 {
 public:
-	static cocos2d::Scene* createScene();
+    static cocos2d::Scene* createScene();
 
-	virtual bool init();
+    virtual bool init();
 	//Main Update Loop
 	void update(float deltaTime);
-
-	// a selector callback
-	void menuCloseCallback(cocos2d::Ref* pSender);
-
-	// implement the "static create()" method manually
-	CREATE_FUNC(HelloWorld);
+    
+    // a selector callback
+    void menuCloseCallback(cocos2d::Ref* pSender);
+    
+    // implement the "static create()" method manually
+    CREATE_FUNC(HelloWorld);
 	//sprite
 	cocos2d::Sprite *Miner;
 	cocos2d::Sprite* background;
 	cocos2d::Sprite* background2;
 	cocos2d::Sprite* background3;
+
 	cocos2d::Sprite* backgroundFront;
 	cocos2d::Sprite* backgroundFront2;
 	cocos2d::Sprite* backgroundFront3;
-	//temp death zone sprite
-	cocos2d::Sprite* deathZone;
-	cocos2d::Sprite* floorZone;
+
+
+	cocos2d::Sprite *Platforms;
 	//sprite physicis body
 	cocos2d::PhysicsBody *MinerPhys;
+	cocos2d::PhysicsBody *PlatformPhys;
 	//keyboard listiner
 	void initListeners();
 	void initKeyboardListener();
@@ -72,66 +66,73 @@ public:
 	void keyUpCallback(EventKeyboard::KeyCode keycode, Event* event);
 
 	//Obstacles
-	PlatformManager *m_PlatformManager;
-	SpikesManager *m_SpikesManager;
-	RocksManager *m_RocksManager;
-	DebreeManager *m_DebreeManager;
-	//BatsManager *m_BatsManager;
-	FallingStonesManager *m_FallingStonesManager;
 
 	//Init Functions
 	void initBackground();
 	void initSprites();
 	void initObstacles();
 
-	//back of screen area 
-	BathMat::PrimitiveSquare m_MySquare{ cocos2d::Vec2(0.0f,0.0f),cocos2d::Vec2(150.0f,1080.0f) };
 
 	//Timer Score Functions and Data
 	void TimerMethod(float dt);
 	cocos2d::Label *scoreCount;
 	float time;
+	
+	
 
-	//Pause Menu Items
-	void PauseScreen(Ref *pSender);
+	TMXTiledMap *_map;
 
-	//player and back of screen collision
-	Rect PlayerCollision;
-	Rect DeathCollision;
-	Rect CharacterCollision;
-	Rect FloorCollision;
-	Rect BatCollision;
+	//---Collision Layer---//
+	CCTMXLayer *_meta;
+	CCPoint tileCoordForPosition(CCPoint position);
 
-	CCTMXTiledMap *_tileMap;
-	CCTMXLayer *_background;
+	//---Spawning Player---//
+	CCSprite *_player;
+	void setPlayerPosition(CCPoint position);
+	void setViewPointCenter(CCPoint position);
+
+
+	void Collisions();
+
+	TMXTiledMap *_tileMap;
+	TMXLayer *_background;
+	
+
+	TMXTiledMap *_tileMapLvl2;
+	TMXTiledMap *_tileMapLvl3;
+	TMXTiledMap *_tileMapLvl4;
+	TMXTiledMap *_tileMapLvl5;
+	TMXTiledMap *_tileMapLvl6;
+	TMXTiledMap *_tileMapLvl7;
+	TMXTiledMap *_tileMapLvl8;
+
 
 	//player movement
 	Player * character;
 	cocos2d::PhysicsBody * CharacterPhys;
 	void PlayerAnimation(int move);
-	int move = 0; 
+	int move = 0;
 	// 0 = Not moving, 1 = Move right, 2 = Move left, 3 = Jump,
 	// 4 = Slide, 5 = Push Back
 	int direction = 0;
 	Sprite* someSprite;
 	// 0 = No Direction, 1 = Right movement, 2 = Left Movement
 
-	//bat movement
-	BatObstacle * batOb;
-	void batSpawn(float dt);
-	int spawnTime;
-
 private:
 	//primitive Square
 	//BathMat::PrimitiveSquare m_MySquare{ cocos2d::Vec2(550.0f,150.0f),cocos2d::Vec2(700.0f,250.0f) };
+
+	//---Tiled Map---//
+	
+
+
+	//---Larry---//
+	Sprite *_Larry;
 
 	void SetPhysicsWorld(cocos2d::PhysicsWorld *world) { sceneWorld = world; };
 	cocos2d::PhysicsWorld *sceneWorld;
 	//Event Listener
 	EventListenerKeyboard* keyboardListener;
-	//collisions contact listener 
-	bool onContactBegin(cocos2d::PhysicsContact &contact);
-
 	//input keys
 	bool key_W = false;
 	bool key_S = false;
@@ -140,9 +141,12 @@ private:
 	//Size of window
 	cocos2d::Size size;
 
-	//collisions 
-	//sates weather the play is jumping
-	bool isJumping = false;
+	bool onContactBegin(cocos2d::PhysicsContact &contact);
+
+
+	
+
+
 };
 
 #endif // __HELLOWORLD_SCENE_H__
