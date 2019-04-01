@@ -88,7 +88,7 @@ bool HelloWorld::init()
 
 	//player creation
 	character = Player::create();
-	character->setPosition(this->boundingBox().getMinX() + 350.0f, this->boundingBox().getMidY() - 200.0f);
+	character->setPosition(this->boundingBox().getMinX() + 400.0f, this->boundingBox().getMidY() - 200.0f);
 	this->addChild(character, 1);
 
 	//Add sprites to the scene
@@ -98,9 +98,10 @@ bool HelloWorld::init()
 	this->addChild(backgroundFront, -1);
 	this->addChild(backgroundFront2, -1);
 	this->addChild(backgroundFront3, -1);
-	this->addChild(deathZone, 3);
-	this->addChild(Miner, 1);
-	this->addChild(edgeNode, 2);
+	this->addChild(deathZone, -3);
+	//this->addChild(Miner, 1);
+	this->addChild(edgeNode, -3);
+	this->addChild(floorZone, -3);
 
 	//Background music
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic("Sound/final_rush_music.mp3");
@@ -173,7 +174,7 @@ bool HelloWorld::init()
 	someSprite->setPosition((visibleSize.width / 10) - 60.0f, visibleSize.height / 2);
 	someSprite->setScale(1.05);
 
-	this->addChild(someSprite);
+	this->addChild(someSprite, 3);
 
 	//Pause Menu Scene
 	auto pause_item = MenuItemImage::create("menus/GAME Pause Button.png", "menus/GAME Pause Button Pressed.png", CC_CALLBACK_1(HelloWorld::PauseScreen, this));
@@ -250,17 +251,6 @@ void HelloWorld::keyUpCallback(EventKeyboard::KeyCode keyCode, Event* event)
 //the contact function
 bool HelloWorld::onContactBegin(cocos2d::PhysicsContact &contact)
 {
-	//temp variables for collison checking
-	PhysicsBody *a = contact.getShapeA()->getBody();
-	PhysicsBody *b = contact.getShapeB()->getBody();
-
-	//check if the bodies have collided
-	if ((1 == a->getCollisionBitmask() && 2 == b->getCollisionBitmask()) || (2 == a->getCollisionBitmask() && 1 == b->getCollisionBitmask()))
-	{
-		CCLOG("Collision has occured");
-		//if player is on the floor they can jump
-		isJumping = true;
-	}
 	return true;
 }
 
@@ -278,111 +268,51 @@ void HelloWorld::update(float deltaTime)
 	m_PlatformManager->update(deltaTime);
 	m_RocksManager->Update(deltaTime);
 	m_DebreeManager->Update(deltaTime);
-	//m_BatsManager->Update(deltaTime);
 	m_FallingStonesManager->Update(deltaTime);
 	m_SpikesManager->Update(deltaTime);
 
-	/*MovingBats *myMovingBats = new MovingBats(cocos2d::Vec2(50, 50), 45.0f, 45.0f, 12, false, cocos2d::Vec2(50, 150), cocos2d::Vec2(50, 0), 10.0f);
-	myMovingBats->update(deltaTime);*/
+	batOb->Update(deltaTime);
 
 	character->update();
 
 	// update the Miner's velocity
 	//new movment changes platers postition
 	//kinda works good starting point
-	if (key_W == true && isJumping == true) {
-		//moves the character up like a jump
-		Miner->setPosition(Miner->getPosition() + Vec2(0.0f, 100.0f));
+	if (key_W == true && isJumping == true) 
+	{
+		character->jump();
 
 		//seting jump to falis 
 		isJumping = false;
-
-		//movement variables
-		move = 4;
 	}
 
-	if (key_S == true) {
+	else if (key_S == true) 
+	{
 		// needs to make a slide or jump
 		//got a few ideas scew or something
-		Miner->runAction(Sliding);
-
-		//movement variables
-		move = 3;
+		//Miner->runAction(Sliding);
+		character->idle();
 	}
-
-	if (key_A == true) {
-		Miner->setPosition(Miner->getPosition() - Vec2(2.5f, 0.0f));
-
-		//movement variables
-		move = 2;
-		direction = 2;
-
-		character->move(1);
-	}
-
-	if (key_D == true) {
-		Miner->setPosition(Miner->getPosition() + Vec2(5.0f, 0.0f));
-
-		//movement variables
-		move = 1;
-		direction = 1;
-
+	else if (key_A == true) 
+	{
 		character->move(0);
-		/*auto cacher = SpriteFrameCache::getInstance();
-		cacher->addSpriteFramesWithFile("Sprites/Run Animation/Run.plist");
+	}
 
-		someSprite = Sprite::createWithSpriteFrameName("Run01.png");
-
-		// load all the animation frames into an array
-		Vector<SpriteFrame*> frames;
-		for (int i = 1; i <= 8; i++)
-		{
-			std::stringstream ss;
-			ss << "Run0" << i << ".png";
-			frames.pushBack(cacher->getSpriteFrameByName(ss.str()));
-			frames.pushBack(cacher->getSpriteFrameByName(ss.str()));
-			frames.pushBack(cacher->getSpriteFrameByName(ss.str()));
-			//i++;
-		}
-
-		// play the animation
-		Animation* anim = Animation::createWithSpriteFrames(frames, 0.05f);
-		someSprite->runAction(CCRepeatForever::create(Animate::create(anim)));
-		someSprite->setPosition(Miner->getPosition());
-		someSprite->setScale(-1.5, 1.5);
-
-		this->addChild(someSprite, 3);*/
+	else if (key_D == true) 
+	{
+		character->move(1);
 	}
 	//make the player moveback so they got to keep moving
 	else
 	{
-		//if the player doesn't make anymovement inputs it moves them back
-		Miner->setPosition(Miner->getPosition() - Vec2(1.5f, 0.0f));
-
-		//movement variables
-		move = 0;
-		direction = 0;
-
 		character->idle();
 	}
 
-	PlayerCollision = Miner->getBoundingBox();
+	//PlayerCollision = Miner->getBoundingBox();
 	DeathCollision = deathZone->getBoundingBox();
 	CharacterCollision = character->getBoundingBox();
-
-	//update player movement animation
-	//PlayerAnimation(move);
-
-	//death condition
-	if (PlayerCollision.intersectsRect(DeathCollision))
-	{
-		//stop music
-		CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
-
-		//send to death screen
-		auto scene = DeathScene::createScene(time);
-		Director::getInstance()->pushScene(scene);
-	}
+	FloorCollision = floorZone->getBoundingBox();
+	BatCollision = batOb->getBoundingBox();
 
 	if (CharacterCollision.intersectsRect(DeathCollision))
 	{
@@ -393,9 +323,20 @@ void HelloWorld::update(float deltaTime)
 		auto scene = DeathScene::createScene(time);
 		Director::getInstance()->pushScene(scene);
 	}
+	if (CharacterCollision.intersectsRect(DeathCollision))
+	{
+		//stop music
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
+
+		//send to death screen
+		auto scene = DeathScene::createScene(time);
+		Director::getInstance()->pushScene(scene);
+	}
+	if (CharacterCollision.intersectsRect(FloorCollision)) //allows player to jump only when touching ground
+	{
+		isJumping = true;
+	}
 }
-
-
 void HelloWorld::initBackground()
 {
 	// ------------------- Background Back ------------------- 
@@ -437,9 +378,6 @@ void HelloWorld::initBackground()
 
 void HelloWorld::initSprites()
 {
-	MinerPhys = PhysicsBody::createBox(Size(320.0f, 470.0f), PhysicsMaterial(0.0f, 0.0f, 1.0f));
-	MinerPhys->setDynamic(true);
-
 	// ------------------- Background Back ------------------- 
 	// -------------------------------------------------------
 	background = Sprite::create("Background Back.png");
@@ -478,22 +416,13 @@ void HelloWorld::initSprites()
 	// --------------------------------------------------
 	deathZone = Sprite::create("TempDeathZone.png");
 	deathZone->setScale(0.3f, 2.0f);
-	//backgroundFront->setAnchorPoint(Vec2(0.0f, 0.0f));
 	deathZone->setPosition(this->boundingBox().getMinX() + 75.0f, this->boundingBox().getMinY() + 510.0f);
 
-	//just a stand in sprite for the character
-	Miner = Sprite::create("Sprites/Run Animation/Run01.png");
-	Miner->setScale(-1.0f, 1.0f);
-	Miner->setPosition(this->boundingBox().getMinX() + 350.0f, this->boundingBox().getMidY() - 200.0f);
-	//apply physicsBody to the sprite
-	Miner->setPhysicsBody(MinerPhys);
-	MinerPhys->setAngularVelocityLimit(0);
-	//seting collision bitmask
-	MinerPhys->setCollisionBitmask(2);
-	MinerPhys->setContactTestBitmask(true);
-
-	//PlayerCollision = Miner->getBoundingBox();
-	//DeathCollision = deathZone->getBoundingBox();
+	// ------------------- Floor Zone ------------------- 
+	// --------------------------------------------------
+	floorZone = Sprite::create("surrounding.png");
+	floorZone->setScale(4.0f, 1.0f);
+	floorZone->setPosition(this->boundingBox().getMinX() + 100.0f, this->boundingBox().getMinY() - 450.0f);
 }
 
 void HelloWorld::initObstacles()
@@ -511,11 +440,12 @@ void HelloWorld::initObstacles()
 	m_DebreeManager = new DebreeManager(this);
 	m_DebreeManager->Generate();
 
-	//m_BatsManager = new BatsManager(this);
-	//m_BatsManager->Generate();
-
 	m_FallingStonesManager = new FallingStonesManager(this);
 	m_FallingStonesManager->Generate();
+
+	//bat function
+	batOb = BatObstacle::create();
+	this->addChild(batOb, 2);
 }
 
 // ------------- Timer Function ------------- 
@@ -529,6 +459,8 @@ void HelloWorld::TimerMethod(float dt)
 	//Insert different difficulty setting here
 	//if (time == ? ) -> Level 1, 2, 3, 4, so on...
 
+	//spawn bat using time function
+	batSpawn(dt);
 }
 
 // ------------- Pause Menu Function ------------- 
@@ -548,18 +480,23 @@ void HelloWorld::PauseScreen(Ref * pSender)
 	Director::getInstance()->pushScene(scene);
 }
 
-// ------------- Player Animation ------------- 
-// -------------------------------------------- 
-void HelloWorld::PlayerAnimation(int move)
+// ------------- Spawn Bat Function ------------- 
+// ---------------------------------------------- 
+void HelloWorld::batSpawn(float dt)
 {
-	//auto cacher = SpriteFrameCache::getInstance();
-	//Sprite* someSprite;
+	spawnTime++;
 
-	//this->addChild(someSprite);
-
-	//get rid of previous child
-	//this->removeChild(someSprite);
+	if (spawnTime == 20) // spawn after 20 seconds pervious bat
+	{
+		batOb->spawnBat();
+	}
+	if (spawnTime == 32) // delete after 12 seconds for that is a full loop
+	{
+		batOb->delBat();
+		spawnTime = 0;
+	}
 }
+
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {

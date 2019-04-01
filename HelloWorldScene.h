@@ -34,6 +34,7 @@
 #include "Bats.h"
 #include "FallingStones.h"
 #include "Player.h"
+#include "BatObstacle.h"
 using namespace cocos2d;
 
 class HelloWorld : public cocos2d::Scene
@@ -60,6 +61,7 @@ public:
 	cocos2d::Sprite* backgroundFront3;
 	//temp death zone sprite
 	cocos2d::Sprite* deathZone;
+	cocos2d::Sprite* floorZone;
 	//sprite physicis body
 	cocos2d::PhysicsBody *MinerPhys;
 	//keyboard listiner
@@ -97,6 +99,8 @@ public:
 	Rect PlayerCollision;
 	Rect DeathCollision;
 	Rect CharacterCollision;
+	Rect FloorCollision;
+	Rect BatCollision;
 
 	CCTMXTiledMap *_tileMap;
 	CCTMXLayer *_background;
@@ -111,6 +115,11 @@ public:
 	int direction = 0;
 	Sprite* someSprite;
 	// 0 = No Direction, 1 = Right movement, 2 = Left Movement
+
+	//bat movement
+	BatObstacle * batOb;
+	void batSpawn(float dt);
+	int spawnTime;
 
 private:
 	//primitive Square

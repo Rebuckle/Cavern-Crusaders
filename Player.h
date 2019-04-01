@@ -10,18 +10,24 @@ class Player : public cocos2d::Sprite
 public:
 	static Player * create();
 	void update();
-	void initPlayer();
+	void initPlayer(Player * character);
 	~Player();
 
 	//movement
 	void move(int directionVal);
 	void idle();
+	void jump();
 
 	//variables
+	//Player * character;
+
 	Animate * idleAnimate;
 	Animate * runAnimate;
+	Animate * jumpAnimate;
 
-	bool moving;
+	cocos2d::PhysicsBody *playerPhys;
+
+	bool moving, jumping, falling;
 	int direction;
 };
 
